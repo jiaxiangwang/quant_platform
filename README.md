@@ -15,6 +15,7 @@
 - 检索候选重排；默认轻量本地实现，也支持离线 BGE CrossEncoder。
 - 内存向量索引和 Qdrant 两种后端。
 - FastAPI `/v1/search` 接口、命令行检索和 DeepAgents 工具适配。
+- Vue 3 知识检索测试台，支持分类、示例问题和检索得分明细。
 - 3 个核心 Skill 与一期示例知识。
 - 纯本地单元测试，不依赖数据库和模型下载。
 
@@ -39,6 +40,25 @@ curl -X POST http://127.0.0.1:8000/v1/search \
   -d '{"query":"双均线策略如何回测","top_k":3}'
 ```
 
+### 启动测试页面
+
+先启动后端，再打开一个终端启动 Vue：
+
+```bash
+# 终端 1
+pip install -e ".[api]"
+quant-kb serve --host 0.0.0.0 --port 8000
+
+# 终端 2
+cd web
+npm install
+npm run dev
+```
+
+浏览器访问 <http://127.0.0.1:5173>。Vite 会把 `/health` 和 `/v1` 请求代理到 `8000` 端口。
+
+也可以先执行 `cd web && npm run build`，再从项目根目录启动 `quant-kb serve`，页面会由 FastAPI 直接托管在 <http://127.0.0.1:8000>。
+
 ## 内网生产配置
 
 推荐把 BGE 模型提前下载到内网模型目录，并通过环境变量切换实现：
@@ -55,11 +75,13 @@ export KB_MODEL_DEVICE=cpu
 quant-kb serve
 ```
 
-也可用 Docker Compose 启动 API 与 Qdrant：
+也可用 Docker Compose 一次启动测试页面、API 与 Qdrant：
 
 ```bash
 docker compose up --build
 ```
+
+启动后直接访问 <http://127.0.0.1:8000>，API 文档仍在 <http://127.0.0.1:8000/docs>。
 
 默认 Compose 使用无需模型的 hashing embedding，便于先验证工程链路。生产启用 BGE 时，将模型目录挂载到 `/models` 并修改上述三个后端配置。BGE-M3 的实际向量维度由模型在启动时自动读取，无需手工配置。
 
@@ -106,4 +128,5 @@ knowledge/                 示例领域知识
 skills/                    DeepAgents Skills
 src/quant_kb/              检索、API 和 Agent 工具代码
 tests/                     单元测试
+web/                       Vue 3 检索测试页面
 ```

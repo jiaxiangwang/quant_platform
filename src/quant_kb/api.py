@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+import os
+from pathlib import Path
 
 from pydantic import BaseModel, Field
 
@@ -9,10 +11,12 @@ from .service import KnowledgeSearchService
 
 try:
     from fastapi import FastAPI, HTTPException, Request
+    from fastapi.staticfiles import StaticFiles
 except ImportError:
     FastAPI = None
     HTTPException = None
     Request = None
+    StaticFiles = None
 
 
 class SearchRequest(BaseModel):
@@ -65,6 +69,15 @@ def create_app(settings: Settings | None = None):
             query=payload.query,
             count=len(results),
             results=[result.to_dict() for result in results],
+        )
+
+    web_dir = Path(os.getenv("KB_WEB_DIR", "web/dist")).resolve()
+    index_file = web_dir / "index.html"
+    if index_file.is_file():
+        app.mount(
+            "/",
+            StaticFiles(directory=web_dir, html=True),
+            name="knowledge-web",
         )
 
     return app

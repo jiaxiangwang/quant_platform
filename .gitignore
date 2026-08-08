@@ -1,12 +1,19 @@
-__pycache__/
-.pytest_cache/
-*.py[cod]
-*.egg-info/
 .venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
 .env
 .coverage
 htmlcov/
 models/
-qdrant_storage/
 .DS_Store
+build/
+dist/
+*.egg-info/
 
+web/node_modules/
+web/dist/
+web/.env.local
+
+qdrant_storage/
