@@ -1,0 +1,21 @@
+id: indicator-vwap
+title: 成交量加权平均价（VWAP）
+category: indicator
+keywords: [VWAP, 成交量加权平均价, 成交额, 成交量]
+indicator_type: price_volume
+status: reviewed
+description: 在指定时间窗口内，以成交量为权重计算平均成交价格。
+parameters:
+  window:
+    type: string
+    examples: [1min, session, daily]
+formula: "VWAP = sum(price_i * volume_i) / sum(volume_i)"
+python_example: |
+  amount = df["price"] * df["volume"]
+  vwap = amount.sum() / df["volume"].sum()
+applicable: [bond, futures, etf]
+frequency: [tick, minute, daily]
+notes:
+  - 必须明确 price 使用逐笔成交价还是分钟典型价。
+  - 成交量为零时不得直接相除。
+

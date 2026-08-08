@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quant-platform-knowledge"
+version = "0.1.0"
+description = "量化平台知识库：Hybrid RAG、DeepAgents Skills 与结构化知识"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.7,<3",
+  "PyYAML>=6.0,<7",
+]
+
+[project.optional-dependencies]
+api = [
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.30,<1",
+]
+qdrant = ["qdrant-client>=1.12,<2"]
+bge = ["sentence-transformers>=3.3,<6"]
+all = [
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.30,<1",
+  "qdrant-client>=1.12,<2",
+  "sentence-transformers>=3.3,<6",
+]
+dev = ["pytest>=8.3,<10", "ruff>=0.8,<1"]
+
+[project.scripts]
+quant-kb = "quant_kb.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+

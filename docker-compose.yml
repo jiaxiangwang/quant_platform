@@ -1,0 +1,29 @@
+services:
+  knowledge-api:
+    build: .
+    environment:
+      KB_KNOWLEDGE_DIR: /app/knowledge
+      KB_VECTOR_BACKEND: qdrant
+      KB_QDRANT_URL: http://qdrant:6333
+      KB_QDRANT_COLLECTION: quant_knowledge
+      KB_EMBEDDING_BACKEND: hashing
+      KB_RERANKER_BACKEND: lexical
+    ports:
+      - "8000:8000"
+    depends_on:
+      qdrant:
+        condition: service_healthy
+
+  qdrant:
+    image: qdrant/qdrant:v1.15.1
+    volumes:
+      - qdrant-data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "bash", "-c", "</dev/tcp/127.0.0.1/6333"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  qdrant-data:
+

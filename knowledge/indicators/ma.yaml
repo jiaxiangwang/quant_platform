@@ -1,0 +1,21 @@
+id: indicator-ma
+title: 移动平均线（MA）
+category: indicator
+keywords: [MA, SMA, moving average, 移动平均线, 双均线]
+indicator_type: trend
+status: reviewed
+description: 对最近 window 个观测价格求算术平均，用于平滑价格和识别趋势。
+parameters:
+  window:
+    type: int
+    required: true
+    constraints: ">= 2"
+formula: "MA_t = mean(P[t-window+1:t])"
+python_example: |
+  df["ma"] = df["close"].rolling(window=window, min_periods=window).mean()
+applicable: [bond, bond_futures, futures, etf]
+frequency: [minute, daily]
+notes:
+  - 分钟策略必须先统一交易时段、缺失分钟和复权口径。
+  - 双均线策略要求 short_window < long_window，并避免使用未来数据。
+
